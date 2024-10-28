@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Collection</title>
+    <style>
+        body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    width: 450px;
+    height: 550px;
+    border-radius: 24px;
+}
+.container {
+    display: flex;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.sidebar {
+    width: 100px;
+    background-color: #f8e0ff;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.main-content {
+    flex-grow: 1;
+    padding: 10px;
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.tab {
+    display: block;
+    width: 100%;
+    padding: 10px 5px;
+    margin-bottom: 10px;
+    background-color: #800080;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align: center;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.tab:hover {
+    transform: scale(1.05);
+}
+.tab.active {
+    align-items: center;
+    background-color: #9932CC;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.prompt {
+    background-color: #f8e0ff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.prompt:hover {
+    background-color: #e0b0ff;
+    transform: translateY(-2px);
+}
+.content-section {
+    display: none;
+}
+.content-section.active {
+    display: block;
+}
+#copyNotification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e0b0ff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+.department-list {
+    list-style-type: none;
+    padding: 0;
+}
+.department-item {
+    background-color: #e0e0e0;
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.department-item:hover {
+    transform: translateY(-2px);
+}
+.department-item.active {
+    background-color: #800080;
+    color: white;
+}
+.department-prompts {
+    display: none;
+}
+.department-prompts.active {
+    display: block;
+}
+.search-container {
+    margin-bottom: 15px;
+}
+#searchInput {
+    width: 95%;
+    padding: 10px;
+    border: 2px solid #800080;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: box-shadow 0.3s;
+}
+#searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(128,0,128,0.3);
+}
+.highlight {
+    background-color: yellow;
+    border-radius: 3px;
+    padding: 0 2px;
+}
+.language-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #800080;
+}
+input:checked + .slider:before {
+    transform: translateX(13px);
+}
+.language-label {
+    font-size: 14px;
+    margin: 0 8px;
+}
+.time-saved-tab {
+    background-color: #800080;
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    border-radius: 15px;
+    font-size: 14px;
+    word-wrap: break-word;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-top">
+                <button class="tab active" data-tab="favorites">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+                <button class="tab" data-tab="trending">Trending</button>
+                <button class="tab" data-tab="department">Department</button>
+            </div>
+            <div class="sidebar-bottom">
+                <div class="language-toggle">
+                    <span class="language-label">日本語</span>
+                    <label class="switch">
+                        <input type="checkbox" id="languageToggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="language-label">EN</span>
+                </div>
+                <div class="time-saved-tab">
+                    You saved <br> <b>30 mins</b> <br>this week!
+                </div>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <h2 id="content-title">Favorites</h2>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search prompts...">
+            </div>
+            <div id="favorites" class="content-section active">
+                <!-- Prompts will be dynamically inserted here -->
+            </div>
+            <div id="trending" class="content-section">
+                <!-- Prompts will be dynamically inserted here -->
+            </div>
+            <div id="department" class="content-section">
+                <ul class="department-list">
+                    <li class="department-item" data-department="sales">C&AI</li>
+                    <li class="department-item" data-department="marketing">Marketing</li>
+                </ul>
+                <div id="sales-prompts" class="department-prompts">
+                    <!-- Prompts will be dynamically inserted here -->
+                </div>
+                <div id="marketing-prompts" class="department-prompts">
+                    <!-- Prompts will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="copyNotification">Prompt copied to clipboard!</div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
